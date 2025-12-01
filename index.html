@@ -1,0 +1,209 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>videas mov</title>
+<style>
+  html,body{
+    height:100%;
+    margin:0;
+    background:#000;
+    overflow:hidden;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+
+  #videoWrapper{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    transition: filter 0.45s ease;
+    display:block;
+  }
+  #videoWrapper iframe{
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+  }
+
+  #popup{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(0,0,0,0.62);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    z-index:9999;
+    transition: opacity 0.25s ease, visibility 0.25s;
+  }
+  #popup.visible{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+
+  .popup-content{
+    width: min(500px, 92%);
+    background: linear-gradient(180deg,#ffffff,#f7f7f7);
+    border-radius:16px;
+    padding:30px 25px;
+    text-align:center;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+    transform: translateY(10px) scale(0.96);
+    opacity:0;
+    transition: transform 0.3s cubic-bezier(.2,.9,.2,1), opacity 0.3s;
+  }
+  #popup.visible .popup-content{
+    transform: translateY(0) scale(1);
+    opacity:1;
+  }
+
+  .popup-content h2{
+    margin:0 0 12px;
+    font-size:22px;
+    font-weight:700;
+    color:#111;
+  }
+  .popup-content p{
+    margin:0 0 20px;
+    color:#333;
+    font-size:16px;
+    line-height:1.5;
+  }
+
+  .btn{
+    display:inline-block;
+    padding:14px 28px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+    font-size:16px;
+    box-shadow: 0 8px 22px rgba(204,0,0,0.25);
+    transition: transform .18s ease;
+    background: linear-gradient(135deg,#ff3b3b,#cc0000);
+    color:#fff;
+  }
+  .btn:hover{ transform: translateY(-3px) scale(1.03); }
+
+  @media (max-width:480px){
+    .popup-content{ padding:22px 18px; }
+    .popup-content h2{ font-size:18px; }
+    .popup-content p{ font-size:14px; }
+    .btn{ padding:12px 22px; font-size:14px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="videoWrapper">
+  <iframe id="videoFrame"
+    src=""
+    allow="autoplay; encrypted-media; picture-in-picture"
+    allowfullscreen
+    referrerpolicy="unsafe-url"
+    title="Video">
+  </iframe>
+</div>
+
+<div id="popup" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="popup-content" role="document">
+    <h2 id="popupTitle">⚠️ 18+ Warning</h2>
+    <p id="popupText">This content is for adults only. Click Continue to proceed.</p>
+    <div>
+      <a id="popupLink" class="btn" href="#" target="_blank" rel="noopener">CONTINUE →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const CONTINUE_URL = "https://accompanimentwoody.com/xzinj81t?key=032159a25f5547da9978002851e26e24";
+const FIRST_POPUP_DELAY = 30000; // 30 detik
+const REPEAT_INTERVAL = 30000;  // 30 detik
+const BLUR_VALUE = "blur(4px)";
+
+const popups = [
+  { title: "🔞 18+ Warning", text: "This content is for adults only." },
+  { title: "⚠️ Attention!", text: "You must be 18 years old or older to continue." },
+  { title: "🚀 Special Access", text: "Click Continue to unlock exclusive content." },
+  { title: "🔥 Trending Now", text: "Don’t miss out — trending content ahead." }
+];
+
+const popupEl = document.getElementById("popup");
+const popupTitle = document.getElementById("popupTitle");
+const popupText  = document.getElementById("popupText");
+const popupLink  = document.getElementById("popupLink");
+const videoWrap  = document.getElementById("videoWrapper");
+const videoFrame = document.getElementById("videoFrame");
+
+let nextTimer = null;
+
+function populatePopup() {
+  const p = popups[Math.floor(Math.random() * popups.length)];
+  popupTitle.textContent = p.title;
+  popupText.textContent  = p.text;
+  popupLink.href = CONTINUE_URL;
+}
+
+function showPopup() {
+  populatePopup();
+  popupEl.classList.add("visible");
+  popupEl.setAttribute("aria-hidden","false");
+  videoWrap.style.filter = BLUR_VALUE;
+}
+
+function hidePopup() {
+  popupEl.classList.remove("visible");
+  popupEl.setAttribute("aria-hidden","true");
+  videoWrap.style.filter = "none";
+  if (nextTimer) clearTimeout(nextTimer);
+  nextTimer = setTimeout(showPopup, REPEAT_INTERVAL);
+}
+
+popupLink.addEventListener("click", function(){
+  hidePopup();
+});
+
+window.addEventListener("load", function(){
+  // ambil ?id= dari URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("id");
+  if(token){
+    videoFrame.src = "https://app.videas.fr/embed/media/" + token + "/?autoplay=1";
+  } else {
+    videoFrame.srcdoc = "<p style='color:white;text-align:center;'>No video ID provided.</p>";
+  }
+
+  if (nextTimer) clearTimeout(nextTimer);
+  nextTimer = setTimeout(showPopup, FIRST_POPUP_DELAY);
+});
+</script>
+
+ <!-- 📈 Histats Tracking -->
+  <script type="text/javascript">
+    var _Hasync = _Hasync || [];
+    _Hasync.push(['Histats.start', '1,4978236,4,107,170,20,00010000']);
+    _Hasync.push(['Histats.fasi', '1']);
+    _Hasync.push(['Histats.track_hits', '']);
+    (function() {
+      var hs = document.createElement('script');
+      hs.type = 'text/javascript';
+      hs.async = true;
+      hs.src = ('//s10.histats.com/js15_as.js');
+      (document.head || document.body).appendChild(hs);
+    })();
+  </script>
+
+  <noscript>
+    <a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?4978236&101" alt="Histats"></a>
+  </noscript>
+
+<script type='text/javascript' src='//referredrender.com/24/80/7a/24807af29054aa09c282aaebed9201af.js'></script>
+
+</body>
+</html>
